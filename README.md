@@ -1,8 +1,8 @@
 This code works on Ros2 Humble. 
 
 # Installation
-
-$ colcon build --symlink-install
+--symlink-install
+$ colcon build 
 
 $ . install/setup.bash
 

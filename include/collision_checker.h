@@ -5,11 +5,9 @@
 #include <ompl/base/spaces/RealVectorStateSpace.h>
 #include <ompl/config.h>
 
-#include "ompl_example_2d/map_utils.h"
+#include "map_utils.h"
 
 namespace ob = ompl::base;
-
-namespace ompl_example_2d {
 
 class CollisionChecker
 {
@@ -85,4 +83,3 @@ private:
     double       map_origin_x_;
     double       map_origin_y_;
 };
-};   // namespace ompl_example_2d

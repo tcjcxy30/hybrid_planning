@@ -1,5 +1,5 @@
 #include "ompl_example_2d/ompl_example_2d.hpp"
-#include "ompl_example_2d/collision_checker.h"
+#include "collision_checker.h"
 #include <rclcpp/rclcpp.hpp>
 
 // STL
@@ -14,8 +14,6 @@ namespace og = ompl::geometric;
 
 namespace ompl_example_2d {
 
-// occupancy map used for planning
-nav_msgs::msg::OccupancyGrid occupancyMap;
 // collision checker
 std::shared_ptr<CollisionChecker> collision_checker;
 
@@ -66,8 +64,7 @@ nav_msgs::msg::Path Planner2D::extractPath(ompl::geometric::SimpleSetup& ss)
  */
 nav_msgs::msg::Path Planner2D::planPath(nav_msgs::msg::OccupancyGrid& globalMap)
 {
-    occupancyMap = globalMap;
-    space        = std::make_shared<ob::RealVectorStateSpace>(2u);
+    space = std::make_shared<ob::RealVectorStateSpace>(2u);
 
     // init planner
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "initiallizing ompl_example_2d planner...");

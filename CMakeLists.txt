@@ -28,20 +28,42 @@ message(STATUS "fff ${Eigen_INCLUDE_DIRS}")
 
 ## Declare a cpp library
 file(GLOB ompl_example_2d_sources
-    src/ompl_example_2d.cpp
+    src//ompl_example_2d/ompl_example_2d.cpp
 )
 
 file(GLOB ompl_example_2d_headers
     include/ompl_example_2d/*.hpp
+    include/*.h
 )
 
+file(GLOB hybrid_planner_sources
+    src//hybrid_planner/hybrid_planner.cpp
+    src//hybrid_planner/topo_prm.cpp
+    src//utils/raycast.cpp
+)
+
+file(GLOB hybrid_planner_headers
+    include/hybrid_planner/*.hpp
+    include/hybrid_planner/*.h
+    include/*.h
+)
+
+
 add_library(${PROJECT_NAME}_library STATIC ${ompl_example_2d_sources} ${ompl_example_2d_headers}
+)
+
+add_library(hybrid_planner_library STATIC ${hybrid_planner_sources} ${hybrid_planner_headers}
 )
 
 target_include_directories(${PROJECT_NAME}_library PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_compile_features(${PROJECT_NAME}_library PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+target_include_directories(hybrid_planner_library PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(hybrid_planner_library PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 ament_target_dependencies(
   ${PROJECT_NAME}_library
@@ -52,11 +74,19 @@ ament_target_dependencies(
   "geometry_msgs"
 )
 
+ament_target_dependencies(
+  hybrid_planner_library
+  Eigen3
+  "rclcpp"
+  "nav_msgs"
+  "geometry_msgs"
+)
+
 # target_link_libraries(${PROJECT_NAME}_library
 #    ${amen_LIBRARIES}
 # )
 
-add_executable(ompl_example_2d_node src/ompl_example_2d_node.cpp)
+add_executable(ompl_example_2d_node src/ompl_example_2d/ompl_example_2d_node.cpp)
 target_include_directories(ompl_example_2d_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
@@ -70,6 +100,19 @@ ament_target_dependencies(
   "geometry_msgs"
 )
 
+add_executable(hybrid_planner_node src/hybrid_planner/hybrid_planner_node.cpp)
+target_include_directories(hybrid_planner_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(hybrid_planner_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_link_libraries(hybrid_planner_node hybrid_planner_library)
+ament_target_dependencies(
+  hybrid_planner_node
+  "rclcpp"
+  "nav_msgs"
+  "geometry_msgs"
+)
+
 # Install launch files
 install(
   DIRECTORY launch
@@ -79,6 +122,9 @@ install(
 )
 
 install(TARGETS ompl_example_2d_node
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS hybrid_planner_node
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

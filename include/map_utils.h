@@ -3,6 +3,7 @@
 #define MAP_UTILS_DEBUG 0
 
 #include "nav_msgs/msg/occupancy_grid.hpp"
+#include <math.h>
 
 /**
  * @brief OccupancyGrid data constants
@@ -11,7 +12,6 @@ static constexpr int8_t OCC_GRID_UNKNOWN  = -1;
 static constexpr int8_t OCC_GRID_FREE     = 0;
 static constexpr int8_t OCC_GRID_OCCUPIED = 100;
 
-namespace ompl_example_2d {
 namespace map_utils {
 /**
  * @brief Generate realvector bounds of an 2D occupancy grid map
@@ -52,4 +52,3 @@ inline bool getBounds(double& min_x, double& max_x, double& min_y, double& max_y
 }
 
 }   // namespace map_utils
-}   // namespace ompl_example_2d
